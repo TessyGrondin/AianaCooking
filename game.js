@@ -28,7 +28,7 @@ let recipes = [{
         "Ajouter le poivre",
         "Incorporer le gingembre",
         "Ajouter les tomates coupées",
-        "Laisser mijoter jusqu'à ce que le plat soit bien savoureux"
+        "Laisser mijoter jusqu'à ce que le plat soit prêt"
     ],
     image:new Image,
     icone:"rougailSaucisses.png"
@@ -315,6 +315,11 @@ function recipePhase() {
             ny += 68;
         }
     }
+    ny += 15;
+    context.textAlign = "left";
+    context.font = "15px Arial";
+    for (let i = 0; i < recipes[selectedRecipe].steps.length; i++, ny += 25)
+        context.fillText("-" + recipes[selectedRecipe].steps[i], 5, ny);
 }
 
 function ingredientPhase() {
