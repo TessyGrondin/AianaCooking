@@ -3,6 +3,7 @@ const context = canvas.getContext('2d');
 
 let phase = 0;
 let time = 60;
+let selectedRecipe = -1;
 
 
 
@@ -30,14 +31,15 @@ let recipes = [{
         "Laisser mijoter jusqu'à ce que le plat soit bien savoureux"
     ],
     image:new Image,
-    icone:"rougailSaucisses.png"//112 92 en x8, y96 * Math.floor(idx / 2) ; x200 y96 * Math.floor(idx / 2)
+    icone:"rougailSaucisses.png"
 }];
 
 
 
 
 
-let functionArray = [selectPhase, ingredientPhase]
+let functionArray = [selectPhase, recipePhase, ingredientPhase];
+let clickOnPhase = [selectClick, recipeClick, ingredientClick];
 
 
 
@@ -336,38 +338,19 @@ function decrement() {
 
 setInterval(decrement, 1000);
 
-document.addEventListener('click', function(e) {
-    let relativeX = e.x - canvas.offsetLeft;
-    let relativeY = e.y - canvas.offsetTop;
-
-    if (menu) {
-        menu = false;
-        return;
-    }
-
-    if (phase == 1) {
-        board.forEach(function(boardtile) {
-        if (!boardtile.activ || relativeX < boardtile.x || relativeX > boardtile.x + 32 || relativeY < boardtile.y || relativeY > boardtile.y + 32)
-            return;
-        if (!boardtile.clicked && boardtile.win)
-            score += 100;
-        else
-            score -= 50;
-        boardtile.clicked = true;
-        });
-        return;
-    }
-});
-
-
-
-
-
 function menuPhase() {
     context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
     context.textAlign = "center";
     context.font = "40px Arial";
     context.fillText("Tap to play", canvas.width / 2, canvas.height / 2);
+}
+
+function recipePhase() {
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.fillStyle = "black";
+    context.textAlign = "center";
+    context.font = "30px Arial";
+    context.fillText("Ingredients :", canvas.width / 2, 20);
 }
 
 function loop() {
@@ -388,3 +371,36 @@ function loop() {
 }
 
 requestAnimationFrame(loop);
+
+
+function selectClick(relativeX, relativeY) {
+    phase++;
+}
+
+function recipeClick(relativeX, relativeY) {
+    phase++;
+}
+
+function ingredientClick(relativeX, relativeY) {
+    board.forEach(function(boardtile) {
+        if (!boardtile.activ || relativeX < boardtile.x || relativeX > boardtile.x + 32 || relativeY < boardtile.y || relativeY > boardtile.y + 32)
+            return;
+        if (!boardtile.clicked && boardtile.win)
+            score += 100;
+        else
+            score -= 50;
+        boardtile.clicked = true;
+    });
+}
+
+document.addEventListener('click', function(e) {
+    let relativeX = e.x - canvas.offsetLeft;
+    let relativeY = e.y - canvas.offsetTop;
+
+    if (menu) {
+        menu = false;
+        return;
+    }
+
+    clickOnPhase[phase](relativeX, relativeY);
+});
