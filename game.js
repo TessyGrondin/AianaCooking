@@ -1,7 +1,7 @@
 const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
 
-let phase = 1;
+let phase = 0;
 let time = 60;
 
 
@@ -29,7 +29,8 @@ let recipes = [{
         "Ajouter les tomates coupées",
         "Laisser mijoter jusqu'à ce que le plat soit bien savoureux"
     ],
-    icone:""
+    image:new Image,
+    icone:"rougailSaucisses.png"//112 92 en x8, y96 * Math.floor(idx / 2) ; x200 y96 * Math.floor(idx / 2)
 }];
 
 
@@ -271,33 +272,48 @@ makeBoard();
 
 
 function selectPhase() {
+    backgroundImage.src = "shelf.png"
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
+
+    context.textAlign = "center";
+    context.fillText("Choix du plat", canvas.width / 2, 60);
+
+    for (let i = 0; i < recipes.length; i++) {
+        recipes[i].image.src = recipes[i].icone;
+        if (i % 2 == 0)
+            context.drawImage(recipes[i].image, 0, 0, recipes[i].image.width, recipes[i].image.height, 8, 96 + 96 * i / 2, 112, 92);
+        else
+            context.drawImage(recipes[i].image, 0, 0, recipes[i].image.width, recipes[i].image.height, 200, 96 + 96 * (i - 1) / 2, 112, 92);
+    }
 }
 
 
 function ingredientPhase() {
-  context.clearRect(0,0,canvas.width,canvas.height);
-  context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
+    backgroundImage.src = "background.png"
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
 
     context.textAlign = "left";
     let i = 0;
     board.forEach(function(tile) {
-      if ((tile.clicked && tile.win) || !tile.win)
+    if ((tile.clicked && tile.win) || !tile.win)
         i++;
-      if (tile.activ) {
+    if (tile.activ) {
         context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
         context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
         if (tile.clicked && tile.win)
-          context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+        context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
         if (tile.clicked && !tile.win)
-          context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-      }
+        context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+    }
     });
     if (i == board.length) {
-      score += 300;
-      makeBoard();
+    score += 300;
+    makeBoard();
     }
     if (score < 0)
-      score = 0;
+    score = 0;
     context.font = "30px Arial";
     context.fillText(score, canvas.width - (score.toString().length + 1) * 20, 40);
     context.fillText("Time left : " + time, 10, 40)
@@ -305,12 +321,12 @@ function ingredientPhase() {
     context.fillText(texts[textChose], 80, 120);
     let px = 80 + (texts[textChose].toString().length + 1) * 7;
     if (textChose == 1)
-      px = 180
+    px = 180
     context.drawImage(assetsImage, patternToShow[0] * 64, 0, 64, 64, px, 95, 32, 32);
     if (patternToShow[1] != -1)
-      context.drawImage(assetsImage, patternToShow[1] * 64, 0, 64, 64, px + 32, 95, 32, 32);
+    context.drawImage(assetsImage, patternToShow[1] * 64, 0, 64, 64, px + 32, 95, 32, 32);
     if (time <= 0)
-      phase = 2;
+    phase = 2;
 }
 
 function decrement() {
