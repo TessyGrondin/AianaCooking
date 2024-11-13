@@ -264,14 +264,22 @@ function makeBoard() {
     } else {
         choseWin(board.length);
         chosePattern(board.length);
-        board.forEach(function(tile){
+        board.forEach(function(tile) {
             tile.activ = true;
         });
     }
 }
 
-makeBoard();
 
+
+
+
+function menuPhase() {
+    context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
+    context.textAlign = "center";
+    context.font = "40px Arial";
+    context.fillText("Tap to play", canvas.width / 2, canvas.height / 2);
+}
 
 function selectPhase() {
     backgroundImage.src = "shelf.png"
@@ -290,6 +298,24 @@ function selectPhase() {
     }
 }
 
+function recipePhase() {
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.fillStyle = "black";
+    context.textAlign = "center";
+    context.font = "30px Arial";
+    context.fillText("Ingredients :", canvas.width / 2, 30);
+
+    let nx = 20;
+    let ny = 40;
+    for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++) {
+        context.drawImage(assetsImage, recipes[selectedRecipe].ingredient[i].index * 64, 0, 64, 64, nx, ny, 64, 64);
+        nx += 68;
+        if (nx >= canvas.width - 64) {
+            nx = 20;
+            ny += 68;
+        }
+    }
+}
 
 function ingredientPhase() {
     backgroundImage.src = "background.png"
@@ -331,28 +357,6 @@ function ingredientPhase() {
         phase = 2;
 }
 
-function decrement() {
-    if (!end && !menu)
-        time--;
-}
-
-setInterval(decrement, 1000);
-
-function menuPhase() {
-    context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
-    context.textAlign = "center";
-    context.font = "40px Arial";
-    context.fillText("Tap to play", canvas.width / 2, canvas.height / 2);
-}
-
-function recipePhase() {
-    context.clearRect(0,0,canvas.width,canvas.height);
-    context.fillStyle = "black";
-    context.textAlign = "center";
-    context.font = "30px Arial";
-    context.fillText("Ingredients :", canvas.width / 2, 20);
-}
-
 function loop() {
     requestAnimationFrame(loop);
     if (menu) {
@@ -374,7 +378,17 @@ requestAnimationFrame(loop);
 
 
 function selectClick(relativeX, relativeY) {
-    phase++;
+    let nx = 0;
+    let ny = 0;
+    for (let i = 0; i < recipes.length; i++) {
+        nx = (i % 2 == 0) ? 8 : 200;
+        ny = (i % 2 == 0) ? 96 + 96 * i : 96 + 96 * (i - 1);
+        if (relativeX > nx && relativeX < nx + 112 && relativeY > ny && relativeY < ny + 92) {
+            selectedRecipe = i;
+            phase++;
+            return;
+        }
+    }
 }
 
 function recipeClick(relativeX, relativeY) {
@@ -404,3 +418,15 @@ document.addEventListener('click', function(e) {
 
     clickOnPhase[phase](relativeX, relativeY);
 });
+
+
+
+
+
+
+function decrement() {
+    if (!end && !menu)
+        time--;
+}
+
+setInterval(decrement, 1000);
