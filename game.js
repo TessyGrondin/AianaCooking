@@ -36,6 +36,10 @@ let recipes = [{
 
 
 
+let functionArray = [selectPhase, ingredientPhase]
+
+
+
 
 
 
@@ -265,15 +269,15 @@ function makeBoard() {
 
 makeBoard();
 
+
+function selectPhase() {
+}
+
+
 function ingredientPhase() {
   context.clearRect(0,0,canvas.width,canvas.height);
   context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
 
-  if (menu) {
-    context.textAlign = "center";
-    context.font = "40px Arial";
-    context.fillText("Tap to play", canvas.width / 2, canvas.height / 2);
-  } else if (!end) {
     context.textAlign = "left";
     let i = 0;
     board.forEach(function(tile) {
@@ -306,15 +310,7 @@ function ingredientPhase() {
     if (patternToShow[1] != -1)
       context.drawImage(assetsImage, patternToShow[1] * 64, 0, 64, 64, px + 32, 95, 32, 32);
     if (time <= 0)
-      end = true;
-  } else {
-    context.textAlign = "center";
-    context.font = "40px Arial";
-    context.fillText("Yoour score :", canvas.width / 2, canvas.height / 2 - 40);
-    context.fillText(score, canvas.width / 2, canvas.height / 2);
-    context.font = "20px Arial";
-    context.fillText("tap to restart", canvas.width / 2, canvas.height - 10);
-  }
+      phase = 2;
 }
 
 function decrement() {
@@ -328,9 +324,12 @@ document.addEventListener('click', function(e) {
     let relativeX = e.x - canvas.offsetLeft;
     let relativeY = e.y - canvas.offsetTop;
 
-    if (phase != 1)
+    if (menu) {
+        menu = false;
         return;
-    if (!end && !menu) {
+    }
+
+    if (phase == 1) {
         board.forEach(function(boardtile) {
         if (!boardtile.activ || relativeX < boardtile.x || relativeX > boardtile.x + 32 || relativeY < boardtile.y || relativeY > boardtile.y + 32)
             return;
@@ -341,16 +340,6 @@ document.addEventListener('click', function(e) {
         boardtile.clicked = true;
         });
         return;
-    } else if (menu) {
-        menu = false;
-        return;
-    } else {
-        phase = 2;
-        // score = 0;
-        // time = 60;
-        // makeBoard();
-        // end = false;
-        // menu = true;
     }
 });
 
@@ -358,12 +347,21 @@ document.addEventListener('click', function(e) {
 
 
 
-
+function menuPhase() {
+    context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
+    context.textAlign = "center";
+    context.font = "40px Arial";
+    context.fillText("Tap to play", canvas.width / 2, canvas.height / 2);
+}
 
 function loop() {
     requestAnimationFrame(loop);
-    if (phase == 1)
-        ingredientPhase();
+    if (menu) {
+        menuPhase();
+        return;
+    }
+    if (phase < functionArray.length)
+        functionArray[phase]();
     else {
         context.clearRect(0,0,canvas.width,canvas.height);
         context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
