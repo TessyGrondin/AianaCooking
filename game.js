@@ -2,8 +2,49 @@ const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
 
 let phase = 1;
-
 let time = 60;
+
+
+
+let recipes = [{
+    name:"Rougail Saucisse",
+    ingredient:[
+        {name:"Saucisses fumées", index:0},
+        {name:"Petits piments", index:1},
+        {name:"Tomates", index:2},
+        {name:"Oignons", index:3},
+        {name:"Gingembre", index:4},
+        {name:"Sel", index:5},
+        {name:"Poivre", index:6},
+        {name:"Huile", index:7}
+    ],
+    steps:[
+        "Faire bouillir les saucisses",
+        "Chauffer l'huile dans une poêle",
+        "Faire revenir les saucisses dans l'huile",
+        "Ajouter les oignons et les faire revenir",
+        "Assaisonner avec du sel",
+        "Ajouter le poivre",
+        "Incorporer le gingembre",
+        "Ajouter les tomates coupées",
+        "Laisser mijoter jusqu'à ce que le plat soit bien savoureux"
+    ],
+    icone:""
+}];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let x4 = [{pos:7, win:false, value:0}, {pos:8, win:false, value:0}, {pos:9, win:false, value:0}, {pos:10, win:false, value:0}, {pos:13, win:false, value:0}, {pos:14, win:false, value:0}, {pos:15, win:false, value:0}, {pos:16, win:false, value:0}, {pos:19, win:false, value:0}, {pos:20, win:false, value:0}, {pos:21, win:false, value:0}, {pos:22, win:false, value:0}, {pos:25, win:false, value:0}, {pos:26, win:false, value:0}, {pos:27, win:false, value:0}, {pos:28, win:false, value:0}];
 let x3 = [{pos:8, win:false, value:0}, {pos:9, win:false, value:0}, {pos:14, win:false, value:0}, {pos:15, win:false, value:0}, {pos:20, win:false, value:0}, {pos:21, win:false, value:0}, {pos:26, win:false, value:0}, {pos:27, win:false, value:0}];
 let board = [];
