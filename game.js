@@ -2,7 +2,7 @@ const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
 
 let phase = 0;
-let time = 60;
+let time = 0;
 let selectedRecipe = -1;
 
 
@@ -330,21 +330,19 @@ function ingredientPhase() {
     context.textAlign = "left";
     let i = 0;
     board.forEach(function(tile) {
-    if ((tile.clicked && tile.win) || !tile.win)
-        i++;
-    if (tile.activ) {
-        context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
-        context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-        if (tile.clicked && tile.win)
-        context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-        if (tile.clicked && !tile.win)
-        context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-    }
+        if ((tile.clicked && tile.win) || !tile.win)
+            i++;
+        if (tile.activ) {
+            context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
+            context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+            if (tile.clicked && tile.win)
+                context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+            if (tile.clicked && !tile.win)
+                context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+        }
     });
-    if (i == board.length) {
-        score += 300;
-        makeBoard();
-    }
+    if (i == board.length)
+        phase++;
     if (score < 0)
         score = 0;
     context.font = "30px Arial";
@@ -358,8 +356,6 @@ function ingredientPhase() {
     context.drawImage(assetsImage, patternToShow[0] * 64, 0, 64, 64, px, 95, 32, 32);
     if (patternToShow[1] != -1)
         context.drawImage(assetsImage, patternToShow[1] * 64, 0, 64, 64, px + 32, 95, 32, 32);
-    if (time <= 0)
-        phase = 2;
 }
 
 function loop() {
@@ -397,6 +393,7 @@ function selectClick(relativeX, relativeY) {
 }
 
 function recipeClick(relativeX, relativeY) {
+    makeBoard();
     phase++;
 }
 
@@ -429,9 +426,9 @@ document.addEventListener('click', function(e) {
 
 
 
-function decrement() {
-    if (!end && !menu)
-        time--;
+function increment() {
+    if (phase >= 2)
+        time++;
 }
 
-setInterval(decrement, 1000);
+setInterval(increment, 1000);
