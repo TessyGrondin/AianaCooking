@@ -66,9 +66,7 @@ let score = 0;
 
 let nbPattern = 10;
 
-let texts = ["touch all ", "don't touch "];
 let patternToShow = [-1, -1];
-let textChose = 0;
 
 let x = (canvas.width - 32 * 6) / 2;
 let y = (canvas.height - 32 * 6) / 2;
@@ -152,25 +150,13 @@ function chosePattern() {
 }
 
 function choseWin() {
-    let w1 = Math.floor(Math.random() * board.length);
-    let w2 = Math.floor(Math.random() * board.length);
-    let w3 = Math.floor(Math.random() * board.length);
-    let w4 = Math.floor(Math.random() * board.length);
-    let w5 = Math.floor(Math.random() * board.length);
+    for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++) {
+        let rand = Math.floor(Math.random() * board.length);
 
-    while (w2 == w1)
-        w2 = Math.floor(Math.random() * board.length);
-    while (w3 == w1 || w3 == w2)
-        w3 = Math.floor(Math.random() * board.length);
-    while (w4 == w1 || w4 == w2 || w4 == w3)
-        w4 = Math.floor(Math.random() * board.length);
-    while (w5 == w1 || w5 == w2 || w5 == w3 || w5 == w4)
-        w5 = Math.floor(Math.random() * board.length);
-    board[w1].win = true;
-    board[w2].win = true;
-    board[w3].win = true;
-    board[w4].win = true;
-    board[w5].win = true;
+        while (board[rand].win)
+            rand = Math.floor(Math.random() * board.length);
+        board[rand].win = true;
+    }
 }
 
 function makeBoard() {
@@ -181,7 +167,13 @@ function makeBoard() {
         tile.win = false;
     });
     choseWin();
-    chosePattern();
+    //chosePattern();
+    for (let i = 0; i < board.length; i++) {
+        if (board[i].win)
+            board[i].value = 3;
+        else
+            board[i].value = 8;
+    }
 }
 
 
@@ -259,15 +251,7 @@ function ingredientPhase() {
         score = 0;
     context.font = "30px Arial";
     context.fillText(score, canvas.width - (score.toString().length + 1) * 20, 40);
-    context.fillText("Time left : " + time, 10, 40)
-    context.font = "20px Arial";
-    context.fillText(texts[textChose], 80, 120);
-    let px = 80 + (texts[textChose].toString().length + 1) * 7;
-    if (textChose == 1)
-        px = 180
-    context.drawImage(assetsImage, patternToShow[0] * 64, 0, 64, 64, px, 95, 32, 32);
-    if (patternToShow[1] != -1)
-        context.drawImage(assetsImage, patternToShow[1] * 64, 0, 64, 64, px + 32, 95, 32, 32);
+    context.fillText("Time : " + time, 10, 40);
 }
 
 function loop() {
