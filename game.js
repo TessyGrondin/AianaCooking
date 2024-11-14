@@ -66,8 +66,6 @@ let score = 0;
 
 let nbPattern = 10;
 
-let patternToShow = [-1, -1];
-
 let x = (canvas.width - 32 * 6) / 2;
 let y = (canvas.height - 32 * 6) / 2;
 
@@ -82,70 +80,27 @@ for (let i = 0; i < 6; i++) {
 
 context.fillStyle = 'yellow';
 
+function popTab(tab, val) {
+    let res = [];
+
+    for (let i = 0; i < tab.length; i++)
+        if (tab[i] != val)
+            res.push(tab[i]);
+    return res;
+}
+
 function chosePattern() {
-    let p1 = Math.floor(Math.random() * nbPattern);
-    let p2 = Math.floor(Math.random() * nbPattern);
-    let p3 = Math.floor(Math.random() * nbPattern);
-    let p4 = Math.floor(Math.random() * nbPattern);
+    let pw = [];
+    for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++)
+        pw.push(recipes[selectedRecipe].ingredient[i].index);
 
-    let div = Math.floor(Math.random() * 2);
-
-    textChose = Math.floor(Math.random() * 2);
-    patternToShow = [-1, -1];
-
-    while (p2 == p1)
-        p2 = Math.floor(Math.random() * nbPattern);
-    while (p3 == p1 || p3 == p2)
-        p3 = Math.floor(Math.random() * nbPattern);
-    while (p4 == p1 || p4 == p2 || p4 == p3)
-        p4 = Math.floor(Math.random() * nbPattern);
-
-    let nb1 = 15;
-    if (div == 0) {
-        if (textChose == 0)
-            patternToShow[0] = p1;
-        else {
-            patternToShow[0] = p2;
-            patternToShow[1] = p3;
-        }
-        board.forEach(function(ref) {
-            if (ref.win)
-                ref.value = p1;
-            else {
-                let choice = Math.floor(Math.random() * 2);
-                if (choice == 0 && nb1 > 0) {
-                    ref.value = p2;
-                    nb1--;
-                } else
-                    ref.value = p3;
-            }
-        });
-    } else {
-        let nb2 = 2;
-        if (textChose == 0) {
-            patternToShow[0] = p1;
-            patternToShow[1] = p4;
-        } else {
-            patternToShow[0] = p2;
-            patternToShow[1] = p3;
-        }
-        board.forEach(function(ref) {
-            if (ref.win) {
-                    let choice = Math.floor(Math.random() * 2);
-                    if (choice == 0 && nb2 > 0) {
-                        ref.value = p1;
-                        nb2--;
-                    } else
-                        ref.value = p4;
-            } else {
-                    let choice = Math.floor(Math.random() * 2);
-                    if (choice == 0 && nb1 > 0) {
-                        ref.value = p2;
-                        nb1--;
-                    } else
-                        ref.value = p3;
-            }
-        });
+    for (let i = 0; i < board.length; i++) {
+        if (board[i].win) {
+            let rand = Math.floor(Math.random() * pw.length);
+            board[i].value = pw[rand];
+            pw = popTab(pw, pw[rand]);
+        } else
+            board[i].value = 8;
     }
 }
 
@@ -167,13 +122,7 @@ function makeBoard() {
         tile.win = false;
     });
     choseWin();
-    //chosePattern();
-    for (let i = 0; i < board.length; i++) {
-        if (board[i].win)
-            board[i].value = 3;
-        else
-            board[i].value = 8;
-    }
+    chosePattern();
 }
 
 
