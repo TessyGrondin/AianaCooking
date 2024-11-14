@@ -91,16 +91,24 @@ function popTab(tab, val) {
 
 function chosePattern() {
     let pw = [];
-    for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++)
+    let pl = [];
+    for (let i = 0; i < board.length; i++)
+        pl.push(i);
+    for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++) {
         pw.push(recipes[selectedRecipe].ingredient[i].index);
+        pl = popTab(pl, recipes[selectedRecipe].ingredient[i].index);
+    }
 
     for (let i = 0; i < board.length; i++) {
         if (board[i].win) {
             let rand = Math.floor(Math.random() * pw.length);
             board[i].value = pw[rand];
             pw = popTab(pw, pw[rand]);
-        } else
-            board[i].value = 8;
+        } else {
+            let rand = Math.floor(Math.random() * pl.length);
+            board[i].value = pl[rand];
+            pl = popTab(pl, pl[rand]);
+        }
     }
 }
 
@@ -187,12 +195,12 @@ function ingredientPhase() {
     board.forEach(function(tile) {
         if ((tile.clicked && tile.win) || !tile.win)
             i++;
-        context.drawImage(assetsImage, 640, 0, 64, 64, tile.x, tile.y, 32, 32);
+        context.drawImage(assetsImage, 36 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
         context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
         if (tile.clicked && tile.win)
-            context.drawImage(assetsImage, 11 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+            context.drawImage(assetsImage, 37 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
         if (tile.clicked && !tile.win)
-            context.drawImage(assetsImage, 12 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+            context.drawImage(assetsImage, 38 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
     });
     if (i == board.length)
         phase++;
