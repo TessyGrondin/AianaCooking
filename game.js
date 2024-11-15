@@ -38,9 +38,10 @@ let recipes = [{
 
 
 
-let functionArray = [selectPhase, recipePhase, ingredientPhase];
-let clickOnPhase = [selectClick, recipeClick, ingredientClick];
+let functionArray = [selectPhase, recipePhase, ingredientPhase, taskPhase];
+let clickOnPhase = [selectClick, recipeClick, ingredientClick, taskClick];
 
+let steps = [];
 
 
 
@@ -64,8 +65,6 @@ backgroundImage.src = "background.png"
 
 let score = 0;
 
-let nbPattern = 10;
-
 let x = (canvas.width - 32 * 6) / 2;
 let y = (canvas.height - 32 * 6) / 2;
 
@@ -77,8 +76,6 @@ for (let i = 0; i < 6; i++) {
     x = (canvas.width - 32 * 6) / 2;
     y += 32;
 }
-
-context.fillStyle = 'yellow';
 
 function popTab(tab, val) {
     let res = [];
@@ -131,6 +128,23 @@ function makeBoard() {
     });
     choseWin();
     chosePattern();
+}
+
+function swap(id1, id2) {
+    let strtmp = steps[id1].text;
+
+    steps[id1].text = steps[id2].text;
+    steps[id2].text = strtmp;
+}
+
+function shuffleTask() {
+    for (let i = 0; i < recipes[selectedRecipe].steps.length; i++)
+        steps.push({text:recipes[selectedRecipe].steps[i], color:"yellow"});
+    for (let i = 0; i < steps.length * 3; i++) {
+        let ran1 = Math.floor(Math.random() * steps.length);
+        let ran2 = Math.floor(Math.random() * steps.length);
+        swap(ran1, ran2);
+    }
 }
 
 
@@ -202,8 +216,10 @@ function ingredientPhase() {
         if (tile.clicked && !tile.win)
             context.drawImage(assetsImage, 38 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
     });
-    if (i == board.length)
+    if (i == board.length) {
+        shuffleTask();
         phase++;
+    }
     if (score < 0)
         score = 0;
     context.font = "30px Arial";
@@ -211,7 +227,21 @@ function ingredientPhase() {
     context.fillText("Time : " + time, 10, 40);
 }
 
+function taskPhase() {
+    context.clearRect(0,0,canvas.width,canvas.height);
+    context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
+
+    let ny = 80;
+    context.textAlign = "left";
+    context.font = "15px Arial";
+    for (let i = 0; i < steps.length; i++, ny += 25) {
+        context.fillStyle = steps[i].color;
+        context.fillText("-" + steps[i].text, 5, ny);
+    }
+}
+
 function loop() {
+    context.fillStyle = 'yellow';
     requestAnimationFrame(loop);
     if (menu) {
         menuPhase();
@@ -229,7 +259,6 @@ function loop() {
 }
 
 requestAnimationFrame(loop);
-
 
 function selectClick(relativeX, relativeY) {
     let nx = 0;
@@ -262,6 +291,11 @@ function ingredientClick(relativeX, relativeY) {
     });
 }
 
+function taskClick(relativeX, relativeY) {
+    end = true;
+    phase++;
+}
+
 document.addEventListener('click', function(e) {
     let relativeX = e.x - canvas.offsetLeft;
     let relativeY = e.y - canvas.offsetTop;
@@ -271,7 +305,15 @@ document.addEventListener('click', function(e) {
         return;
     }
 
-    clickOnPhase[phase](relativeX, relativeY);
+    if (end) {
+        end = false;
+        phase = 0;
+        menu = true;
+        return;
+    }
+
+    if (phase < clickOnPhase.length)
+        clickOnPhase[phase](relativeX, relativeY);
 });
 
 
