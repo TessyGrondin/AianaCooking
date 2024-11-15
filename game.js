@@ -156,7 +156,7 @@ function menuPhase() {
     context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
     context.textAlign = "center";
     context.font = "40px Arial";
-    context.fillText("Tap to play", canvas.width / 2, canvas.height / 2);
+    context.fillText("Appuie pour jouer", canvas.width / 2, canvas.height / 2);
 }
 
 function selectPhase() {
@@ -334,6 +334,8 @@ document.addEventListener('click', function(e) {
         end = false;
         phase = 0;
         menu = true;
+        selectedRecipe = -1;
+        selectedStep = -1;
         return;
     }
 
