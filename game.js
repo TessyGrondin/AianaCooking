@@ -292,8 +292,16 @@ function ingredientClick(relativeX, relativeY) {
 }
 
 function taskClick(relativeX, relativeY) {
-    end = true;
-    phase++;
+    // end = true;
+    // phase++;
+    let ny = 80;
+
+    for (let i = 0; i < steps.length; i++, ny += 25) {
+        steps[i].color = 'yellow';
+        if (relativeY >= ny - 10 && relativeY <= ny) {
+            steps[i].color = 'blue';
+        }
+    }
 }
 
 document.addEventListener('click', function(e) {
