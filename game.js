@@ -265,8 +265,10 @@ function loop() {
         context.clearRect(0,0,canvas.width,canvas.height);
         context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
         context.textAlign = "center";
-        context.font = "40px Arial";
-        context.fillText("broke the loop", canvas.width / 2, canvas.height / 2 - 40);
+        context.font = "30px Arial";
+        context.fillText(recipes[selectedRecipe].name, canvas.width / 2, 50);
+        context.drawImage(recipes[selectedRecipe].image, 0, 0, recipes[selectedRecipe].image.width, recipes[selectedRecipe].image.height, (canvas.width / 2) - (112 * 1.5 / 2), 80, 112 * 1.5, 92 * 1.5);
+        context.fillText("en " + time + "s !", canvas.width / 2, 300);
     }
 }
 
@@ -345,7 +347,7 @@ document.addEventListener('click', function(e) {
 
 
 function increment() {
-    if (phase >= 2)
+    if (phase >= 2 && !end)
         time++;
 }
 
