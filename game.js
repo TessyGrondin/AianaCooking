@@ -42,6 +42,7 @@ let functionArray = [selectPhase, recipePhase, ingredientPhase, taskPhase];
 let clickOnPhase = [selectClick, recipeClick, ingredientClick, taskClick];
 
 let steps = [];
+let selectedStep = -1;
 
 
 
@@ -298,8 +299,13 @@ function taskClick(relativeX, relativeY) {
 
     for (let i = 0; i < steps.length; i++, ny += 25) {
         steps[i].color = 'yellow';
-        if (relativeY >= ny - 10 && relativeY <= ny) {
+        if (relativeY >= ny - 10 && relativeY <= ny && selectedStep == -1) {
             steps[i].color = 'blue';
+            selectedStep = i;
+        } else if (relativeY >= ny - 10 && relativeY <= ny && selectedStep != -1) {
+            steps[selectedStep].color = 'yellow';
+            swap(selectedStep, i);
+            selectedStep = -1;
         }
     }
 }
