@@ -239,6 +239,17 @@ function taskPhase() {
         context.fillStyle = steps[i].color;
         context.fillText("-" + steps[i].text, 5, ny);
     }
+    context.font = "30px Arial";
+    context.fillText("Time : " + time, 10, 40);
+
+    let count = 0;
+    for (let i = 0; i < steps.length; i++)
+        if (steps[i].text == recipes[selectedRecipe].steps[i])
+            count++;
+    if (count == steps.length) {
+        end = true;
+        phase++;
+    }
 }
 
 function loop() {
@@ -293,8 +304,6 @@ function ingredientClick(relativeX, relativeY) {
 }
 
 function taskClick(relativeX, relativeY) {
-    // end = true;
-    // phase++;
     let ny = 80;
 
     for (let i = 0; i < steps.length; i++, ny += 25) {
