@@ -10,9 +10,9 @@ let selectedRecipe = -1;
 let recipes = [{
     name:"Rougail Saucisse",
     ingredient:[
-        {name:"Saucisses fumées", index:0},
-        {name:"Petits piments", index:1},
-        {name:"Tomates", index:2},
+        {name:"Saucisses fumées", index:33},
+        {name:"Petits piments", index:34},
+        {name:"Tomates", index:35},
         {name:"Oignons", index:3},
         {name:"Gingembre", index:4},
         {name:"Sel", index:5},
@@ -91,10 +91,10 @@ function chosePattern() {
     let pw = [];
     let pl = [];
     for (let i = 0; i < board.length; i++)
-        pl.push(i);
+        pl.push(i + 3);
     for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++) {
-        pw.push(recipes[selectedRecipe].ingredient[i].index);
-        pl = popTab(pl, recipes[selectedRecipe].ingredient[i].index);
+        pw.push(recipes[selectedRecipe].ingredient[i].index);// + 3
+        pl = popTab(pl, recipes[selectedRecipe].ingredient[i].index);// + 3
     }
 
     for (let i = 0; i < board.length; i++) {
@@ -140,7 +140,7 @@ function swap(id1, id2) {
 
 function shuffleTask() {
     for (let i = 0; i < recipes[selectedRecipe].steps.length; i++)
-        steps.push({text:recipes[selectedRecipe].steps[i], color:"yellow"});
+        steps.push({text:recipes[selectedRecipe].steps[i], color:"green"});
     for (let i = 0; i < steps.length * 3; i++) {
         let ran1 = Math.floor(Math.random() * steps.length);
         let ran2 = Math.floor(Math.random() * steps.length);
@@ -210,12 +210,12 @@ function ingredientPhase() {
     board.forEach(function(tile) {
         if ((tile.clicked && tile.win) || !tile.win)
             i++;
-        context.drawImage(assetsImage, 36 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
-        context.drawImage(assetsImage, tile.value * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+        context.drawImage(assetsImage, 0, 0, 64, 64, tile.x, tile.y, 32, 32);
+        context.drawImage(assetsImage, (tile.value) * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
         if (tile.clicked && tile.win)
-            context.drawImage(assetsImage, 37 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+            context.drawImage(assetsImage, 64, 0, 64, 64, tile.x, tile.y, 32, 32);
         if (tile.clicked && !tile.win)
-            context.drawImage(assetsImage, 38 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
+            context.drawImage(assetsImage, 2 * 64, 0, 64, 64, tile.x, tile.y, 32, 32);
     });
     if (i == board.length) {
         shuffleTask();
@@ -230,7 +230,7 @@ function ingredientPhase() {
 
 function taskPhase() {
     context.clearRect(0,0,canvas.width,canvas.height);
-    context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
+    context.drawImage(backgroundImage, 0, 0, 320, backgroundImage.height / 2, 0, 0, canvas.width, canvas.height);
 
     let ny = 80;
     context.textAlign = "left";
@@ -240,6 +240,7 @@ function taskPhase() {
         context.fillText("-" + steps[i].text, 5, ny);
     }
     context.font = "30px Arial";
+    context.fillStyle = "black";
     context.fillText("Time : " + time, 10, 40);
 
     let count = 0;
@@ -262,13 +263,14 @@ function loop() {
     if (phase < functionArray.length)
         functionArray[phase]();
     else {
+        context.fillStyle = 'black';
         context.clearRect(0,0,canvas.width,canvas.height);
         context.drawImage(backgroundImage, 0, 0, 320, 480, 0, 0, canvas.width, canvas.height);
         context.textAlign = "center";
         context.font = "30px Arial";
         context.fillText(recipes[selectedRecipe].name, canvas.width / 2, 50);
-        context.drawImage(recipes[selectedRecipe].image, 0, 0, recipes[selectedRecipe].image.width, recipes[selectedRecipe].image.height, (canvas.width / 2) - (112 * 1.5 / 2), 80, 112 * 1.5, 92 * 1.5);
-        context.fillText("en " + time + "s !", canvas.width / 2, 300);
+        context.drawImage(recipes[selectedRecipe].image, 0, 0, recipes[selectedRecipe].image.width, recipes[selectedRecipe].image.height, (canvas.width / 2) - (112 * 1.5 / 2), 200, 112 * 1.5, 92 * 1.5);
+        context.fillText("en " + time + "s !", canvas.width / 2, 100);
     }
 }
 
@@ -309,12 +311,12 @@ function taskClick(relativeX, relativeY) {
     let ny = 80;
 
     for (let i = 0; i < steps.length; i++, ny += 25) {
-        steps[i].color = 'yellow';
+        steps[i].color = 'green';
         if (relativeY >= ny - 10 && relativeY <= ny && selectedStep == -1) {
             steps[i].color = 'blue';
             selectedStep = i;
         } else if (relativeY >= ny - 10 && relativeY <= ny && selectedStep != -1) {
-            steps[selectedStep].color = 'yellow';
+            steps[selectedStep].color = 'green';
             swap(selectedStep, i);
             selectedStep = -1;
         }
