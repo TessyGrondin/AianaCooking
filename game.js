@@ -10,8 +10,8 @@ let selectedRecipe = -1;
 let recipes = [{
     name:"Rougail Saucisse",
     ingredient:[
-        {name:"Saucisses fumées", index:33},
-        {name:"Petits piments", index:34},
+        {name:"Saucisses\nfumées", index:33},
+        {name:"Petits\npiments", index:34},
         {name:"Tomates", index:35},
         {name:"Oignons", index:3},
         {name:"Gingembre", index:4},
@@ -69,6 +69,13 @@ let score = 0;
 let x = (canvas.width - 32 * 6) / 2;
 let y = (canvas.height - 32 * 6) / 2;
 
+function drawSplit(s, posx, posy, height) {
+  s = s.toString();
+  let toWrite = s.split('\n');
+  for (let i = 0; i < toWrite.length; i++)
+    context.fillText(toWrite[i], posx, posy + i * height);
+}
+
 for (let i = 0; i < 6; i++) {
     for (let j = 0; j < 6; j++) {
         board.push({x:x, y:y, value:0, clicked:false, win:false});
@@ -93,8 +100,8 @@ function chosePattern() {
     for (let i = 0; i < board.length; i++)
         pl.push(i + 3);
     for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++) {
-        pw.push(recipes[selectedRecipe].ingredient[i].index);// + 3
-        pl = popTab(pl, recipes[selectedRecipe].ingredient[i].index);// + 3
+        pw.push(recipes[selectedRecipe].ingredient[i].index);
+        pl = popTab(pl, recipes[selectedRecipe].ingredient[i].index);
     }
 
     for (let i = 0; i < board.length; i++) {
@@ -183,19 +190,20 @@ function recipePhase() {
     context.font = "30px Arial";
     context.fillText("Ingredients :", canvas.width / 2, 30);
 
+    context.font = "15px Arial";
     let nx = 20;
     let ny = 40;
     for (let i = 0; i < recipes[selectedRecipe].ingredient.length; i++) {
         context.drawImage(assetsImage, recipes[selectedRecipe].ingredient[i].index * 64, 0, 64, 64, nx, ny, 64, 64);
+        drawSplit(recipes[selectedRecipe].ingredient[i].name, nx + 32, ny + 64, 15);
         nx += 68;
         if (nx >= canvas.width - 64) {
             nx = 20;
             ny += 68;
         }
     }
-    ny += 15;
     context.textAlign = "left";
-    context.font = "15px Arial";
+    ny += 30;
     for (let i = 0; i < recipes[selectedRecipe].steps.length; i++, ny += 25)
         context.fillText("-" + recipes[selectedRecipe].steps[i], 5, ny);
 }
