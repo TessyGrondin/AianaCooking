@@ -6,6 +6,9 @@ let time = 0;
 let selectedRecipe = -1;
 
 
+let minIndex = 3;//index du premier ingredient
+let ingredientsList = ["Oignons", "Gingembre", "Sel", "Poivre", "Huile", "Poulet", "Patates", "Oeufs", "Ail", "Curcuma", "Combava", "Espadon", "Poivrons", "Carottes", "Persil", "Ciboulette", "Boucané", "Crevettes", "Bichiques", "Oignons verts", "Jambon", "Bred chou d'Chine", "Riz", "Chouchou", "Massalé", "Cabri", "Thym", "Coeur de palmiste", "Fruit à pain", "Larves de guèpes", "Saucisses fumées", "Petits piments", "Tomates", "Bred chouchou", "4 épices", "Caloupilé", "Bâton Mourong"];
+
 
 let recipes = [{
     name:"Rougail Saucisse",
